@@ -17,14 +17,16 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
+    const { username, password } = this.state
+
     axios
-      .post(`http://localhost:3300/api/login`, this.state.user)
+      .post(`http://localhost:3300/api/login`, { username, password })
       .then(res => {
         localStorage.setItem('token', res.data.token)
         this.props.history.push('/')
       })
       .catch(err => {
-        this.setState({ ...this.state, message: err })
+        this.setState({ ...this.state, message: err.data })
       })
   }
 

@@ -17,13 +17,15 @@ class Register extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
+    const { username, password } = this.state
+
     axios
-      .post(`http://localhost:3300/api/login`, this.state.user)
+      .post(`http://localhost:3300/api/login`, { username, password })
       .then(res => {
         this.setState({ ...initialState, message: res.data })
       })
       .catch(err => {
-        this.setState({ ...initialState, message: err })
+        this.setState({ ...initialState, message: err.data })
       })
   }
 
