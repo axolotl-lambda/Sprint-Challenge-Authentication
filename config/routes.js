@@ -1,6 +1,7 @@
 const axios = require('axios')
+const bcrypt = require('bcryptjs')
 
-const { authenticate } = require('./middlewares')
+const { generateToken, authenticate } = require('./middlewares')
 const db = require('../database/dbConfig.js')
 
 module.exports = server => {
@@ -23,16 +24,19 @@ function login(req, res) {
 
   db('users')
     .where({ username })
+    .first()
     .then(user => {
       if (bcrypt.compareSync(password, user.password)) {
-        // generate token
-        // const token = generateToken({ ...user })
+        const token = generateToken({ username })
         res.status(200).json({ message: 'you may pass', token })
       } else {
         res.status(401).json({ message: 'you shall not pass' })
       }
     })
-    .catch(err => res.status(500).json(err))
+    .catch(err => {
+      res.status(500).json(err)
+      console.log(err)
+    })
 }
 
 function getJokes(req, res) {
